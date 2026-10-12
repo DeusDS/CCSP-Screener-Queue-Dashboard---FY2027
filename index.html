@@ -152,10 +152,17 @@ html,body{margin:0;background:var(--color-bg)}
 .qp th.r{font-family:var(--font-anthropic-sans)}
 .qp td{padding:9px 8px}
 .qp td.lab{white-space:nowrap}
-.qp td.vl{border-left:1px solid var(--color-border-line)}
-.qp th.vl{border-left:1px solid var(--color-border-line)}
-.qp table.stick th:first-child,.qp table.stick td:first-child{position:sticky;left:0;z-index:2;background:var(--color-panel);box-shadow:1px 0 0 var(--color-border-line)}
-.qp table.stick tr.grp td:first-child{background:var(--cds-chart-grid);box-shadow:none}
+.qp td.vl,.qp th.vl{box-shadow:inset 1px 0 0 var(--color-border-line)}
+.qp tr.grp td{box-shadow:none}
+.qp table.stick th:first-child,.qp table.stick td:first-child{position:sticky;left:0;z-index:2;background:var(--color-panel)}
+.qp .qp-tw.scrolled table.stick th:first-child,.qp .qp-tw.scrolled table.stick td:first-child{box-shadow:6px 0 6px -6px rgba(4,19,46,.25)}
+.qp table.stick tr.grp td:first-child{background:var(--cds-chart-grid)}
+.qp table{font-variant-numeric:tabular-nums lining-nums}
+.qp td.r{font-family:var(--font-anthropic-sans);font-size:13px}
+.qp thead tr:last-child th{border-bottom:2px solid var(--color-fg)}
+.qp thead tr.gh th{border-bottom:1px solid var(--color-border-line)}
+.qp thead tr.gh th.gap{border-bottom:1px solid transparent}
+.qp tbody tr:last-child td{border-bottom:1px solid var(--color-border-line)}
 .qp table.stick tr.sel td:first-child{background:color-mix(in srgb,#c8a04a 14%,var(--color-panel))}
 .qp table.stick tbody tr:hover td:first-child{background:color-mix(in srgb,var(--cds-chart-grid) 100%,var(--color-panel))}
 .qp table.compact{max-width:640px}
@@ -193,8 +200,8 @@ html,body{margin:0;background:var(--color-bg)}
       <button class="qp-chip on" role="tab" aria-selected="true" data-tab="summary">Summary</button>
       <button class="qp-chip" role="tab" aria-selected="false" data-tab="queue">Queue &amp; wait</button>
       <button class="qp-chip" role="tab" aria-selected="false" data-tab="callbacks">Callbacks</button>
-      <button class="qp-chip" role="tab" aria-selected="false" data-tab="staffing">Staffing &amp; throughput</button>
-      <button class="qp-chip" role="tab" aria-selected="false" data-tab="aht">Handle time</button>
+      <button class="qp-chip" role="tab" aria-selected="false" data-tab="staffing">Staffing &amp; workload</button>
+      <button class="qp-chip" role="tab" aria-selected="false" data-tab="aht">Time per contact</button>
       <button class="qp-chip" role="tab" aria-selected="false" data-tab="outlook">Projections &amp; patterns</button>
       <button class="qp-chip" role="tab" aria-selected="false" data-tab="log">Daily log</button>
       <button class="qp-chip" role="tab" aria-selected="false" data-tab="notes">Data notes</button>
@@ -246,7 +253,7 @@ html,body{margin:0;background:var(--color-bg)}
         <dt>Acceptance</dt><dd>Accepted ÷ scheduled, for the period as a whole.</dd>
         <dt>All contacts</dt><dd>Callbacks + voicemails + outbound calls serviced.</dd>
         <dt>Per staff</dt><dd>All interactions ÷ staff in queue, averaged over days with a staff count.</dd>
-        <dt>Callback AHT</dt><dd>Average handle time of a callback, in minutes.</dd>
+        <dt>Time per contact</dt><dd>Average minutes staff spend on one callback or one outbound call, start to finish. Call centers call this average handle time (AHT). Together these two account for nearly all staff time on contacts.</dd>
         <dt>Backlog / Longest wait</dt><dd>Callbacks not yet dialed and the oldest callback's wait on the last reported day of the period. Down is better.</dd>
       </dl></details>
     </div>
@@ -354,7 +361,7 @@ html,body{margin:0;background:var(--color-bg)}
     </div>
   </section>
   <section>
-    <div class="qp-sh"><span class="k">09</span><h2>Throughput</h2></div>
+    <div class="qp-sh"><span class="k">09</span><h2>Daily output</h2></div>
     <div class="qp-grid">
       <div class="qp-card" id="card-serv">
         <h3>Serviced Interactions by Type</h3>
@@ -382,34 +389,34 @@ html,body{margin:0;background:var(--color-bg)}
 
 <div class="qp-pane" id="aht">
   <section>
-    <div class="qp-sh"><span class="k">10</span><h2>Average handle time</h2></div>
+    <div class="qp-sh"><span class="k">10</span><h2>Average minutes per contact</h2></div>
     <div class="qp-card" id="card-aht">
-      <h3>Average Handle Time by Contact Type (Minutes)</h3>
-      <p class="cs">Daily average handle time for callbacks, voicemails and outbound calls.</p>
+      <h3>Average Minutes per Contact, by Type</h3>
+      <p class="cs">Average time staff spend on one callback, voicemail or outbound call, start to finish, by day. Call centers call this average handle time (AHT).</p>
       <div class="qp-legend" id="lgAht"></div>
       <div class="qp-chart" id="chAht" data-source="daily periods annotations"></div>
       <div class="qp-take" id="takeAht" data-source="period_summary headline"></div>
       <div class="qp-take" id="takeAhtNote" data-source="daily annotations"></div>
-      <p class="qp-src">Voicemail handle time swings widely because few voicemails are serviced each day.</p>
+      <p class="qp-src">Minutes per voicemail swing widely because few voicemails are serviced each day.</p>
     </div>
   </section>
   <section>
-    <div class="qp-sh"><span class="k">10a</span><h2>Handle time by period &amp; staff workload</h2></div>
+    <div class="qp-sh"><span class="k">10a</span><h2>Minutes per contact by period &amp; staff workload</h2></div>
     <div class="qp-grid">
       <div class="qp-card" id="card-aht-tbl">
-        <h3>Average Handle Time by Period</h3>
+        <h3>Average Minutes per Contact, by Period</h3>
         <p class="cs">Minutes per interaction, plus the handle hours each staff member logged per day. Bars compare each period with the highest value in the column.</p>
         <div class="qp-tw"><table class="stick" id="tblAht" data-source="period_summary" data-row-key="period"></table></div>
       </div>
       <div class="qp-card" id="card-load">
         <h3>Handle Hours per Staff Member, by Week</h3>
-        <p class="cs">Average daily hours each staff member spent handling callbacks, voicemails and outbound calls (count × handle time ÷ staff). The dashed line is an 8-hour day.</p>
+        <p class="cs">Average daily hours each staff member spent handling callbacks, voicemails and outbound calls (number of contacts × minutes per contact ÷ staff). The dashed line is an 8-hour day.</p>
         <div class="qp-chart" id="chLoad" data-source="period_summary"></div>
         <div class="qp-take" id="takeLoad" data-source="period_summary annotations"></div>
-        <h3 style="margin-top:22px">Where Handle Time Goes</h3>
+        <h3 style="margin-top:22px">Where Staff Time Goes</h3>
         <p class="cs" id="mixSub">Share of total handle minutes by contact type, selected period.</p>
         <div id="mix" data-source="period_summary"></div>
-        <p class="qp-src">The 8-hour line is a reference, not a recorded shift length. Handle time excludes after-call work, breaks and meetings, so values near the line suggest little spare capacity.</p>
+        <p class="qp-src">The 8-hour line is a reference, not a recorded shift length. These hours count only time on contacts; breaks, meetings and other duties come on top, so values near the line suggest little spare capacity.</p>
       </div>
     </div>
   </section>
@@ -452,7 +459,7 @@ html,body{margin:0;background:var(--color-bg)}
     </div>
   </section>
   <section>
-    <div class="qp-sh"><span class="k">14</span><h2>Demand vs. throughput</h2></div>
+    <div class="qp-sh"><span class="k">14</span><h2>Callbacks booked vs. returned</h2></div>
     <div class="qp-grid">
       <div class="qp-card" id="card-gap">
         <h3>Callbacks Scheduled vs. Callbacks Serviced, Daily</h3>
@@ -524,10 +531,10 @@ html,body{margin:0;background:var(--color-bg)}
         <li><b>Markers.</b> Numbered markers on the daily charts are the four key events in the notes: screeners partly moved, nearly all moved, the after-hours purge, and CCSP's two days on the screening spreadsheet.</li>
         <li><b>Staff counts.</b> Some days have no staff count; those days are left out of staff averages and per-staff figures.</li>
         <li><b>Partial fields.</b> Web intake and overnight voicemail counts start partway through the series, and the latest day has queue fields but no call data.</li>
-        <li><b>Handle times.</b> Stored in the workbook as clock time; converted to minutes.</li>
+        <li><b>Minutes per contact.</b> The workbook's Average Handle Time columns, stored as clock time and converted to minutes.</li>
         <li><b>Difference column.</b> The workbook's "Difference between Scheduled and Accepted" equals accepted minus scheduled, so it is negative.</li>
         <li><b>Projections &amp; patterns.</b> The backlog projection is a least-squares line through each business day since the largest one-day drop; "staff to hold flat" divides that trend by callbacks serviced per staff member in the latest full week. Both are planning estimates. The staff-vs-callbacks line is fitted across all days with both counts.</li>
-        <li><b>Handle hours per staff.</b> Callbacks × callback handle time + voicemails × voicemail handle time + outbound × outbound handle time, divided by staff in queue, on days with a staff count. The 8-hour line is a reference only.</li>
+        <li><b>Handle hours per staff.</b> Callbacks × minutes per callback + voicemails × minutes per voicemail + outbound calls × minutes per outbound call, divided by staff in queue, on days with a staff count. The 8-hour line is a reference only.</li>
         <li><b>Calendar days.</b> The workbook's calendar-day wait is rounded on later days; this dashboard shows hours and the recorded business days instead.</li>
       </ol>
     </div>
@@ -993,7 +1000,7 @@ dash.calc('staff_fit', {
     return `<span class="${cls}">${z ? '■' : up ? '▲' : '▼'} <span class="qp-d">${mk('period_summary', field, where, txt)}${mode === 'pts' ? ' pts' : ''}</span>${pr ? ` vs. ${esc(priorName(pr))}` : ''}${verdict ? ` · <b>${verdict}</b>` : ''}</span>`;
   };
 
-  const TABNAME = { summary: 'Summary', queue: 'Queue & wait', callbacks: 'Callbacks', staffing: 'Staffing & throughput', aht: 'Handle time', outlook: 'Projections & patterns', log: 'Daily log', notes: 'Data notes' };
+  const TABNAME = { summary: 'Summary', queue: 'Queue & wait', callbacks: 'Callbacks', staffing: 'Staffing & workload', aht: 'Time per contact', outlook: 'Projections & patterns', log: 'Daily log', notes: 'Data notes' };
 
   function renderControls(G) {
     const p = period();
@@ -1159,9 +1166,10 @@ dash.calc('staff_fit', {
     ['accepted_avg', 'Accepted', 'per day', f0, 'Callbacks', 'Callbacks accepted when dialed'],
     ['cb_serviced_avg', 'Serviced', 'per day', f0, 'Callbacks', 'Callback interactions completed'],
     ['accept_rate', 'Acceptance', 'of scheduled', fp, 'Callbacks', 'Accepted ÷ scheduled'],
-    ['total_serviced_avg', 'All contacts', 'per day', f0, 'Throughput', 'Callbacks + voicemails + outbound'],
-    ['per_staff', 'Per staff', 'per day', f1, 'Throughput', 'All interactions ÷ staff'],
-    ['aht_cb', 'Callback AHT', 'min', f1, 'Throughput', 'Average handle time of a callback'],
+    ['total_serviced_avg', 'All contacts', 'per day', f0, 'Daily output', 'Callbacks + voicemails + outbound calls completed'],
+    ['per_staff', 'Per staff', 'per day', f1, 'Daily output', 'All contacts ÷ staff on the phones'],
+    ['aht_cb', 'Callback', 'minutes', f1, 'Time per contact', 'Average minutes staff spend on one callback (average handle time)'],
+    ['aht_out', 'Outbound call', 'minutes', f1, 'Time per contact', 'Average minutes staff spend on one outbound call (average handle time)'],
     ['backlog_end', 'Backlog', 'not dialed', f0, 'At period end', 'Callbacks not yet dialed, last day of period'],
     ['wait_end', 'Longest wait', 'hours', f1, 'At period end', 'Oldest callback wait, last day of period'],
   ];
@@ -1188,6 +1196,7 @@ dash.calc('staff_fit', {
     }
     el.innerHTML = `<thead>${gh}<tr>${cols.map(([k, l, sub, f, , tip], i) => `<th data-field="${k}" class="${f ? 'r' : ''} ${starts[i] ? 'vl' : ''}"${tip ? ` title="${esc(tip)}"` : ''}>${esc(l)}${sub ? `<small>${esc(sub)}</small>` : ''}</th>`).join('')}</tr></thead><tbody>${body}</tbody>`;
   };
+  document.querySelectorAll('.qp-tw').forEach((w) => w.addEventListener('scroll', () => w.classList.toggle('scrolled', w.scrollLeft > 2), { passive: true }));
   $('#tblPeriod').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-key]'); if (tr) dash.setParams({ period: tr.dataset.key }); });
 
   function renderSummary(G) {
@@ -1283,7 +1292,7 @@ dash.calc('staff_fit', {
   function renderMix(G) {
     const el = $('#mix'), r = S(G, period());
     if (fail(el, ['period_summary'])) return;
-    if (!r || r.handle_share_cb == null) { el.innerHTML = '<p class="qp-neu" style="font-size:13px;margin:0">No handle-time data in this period.</p>'; return; }
+    if (!r || r.handle_share_cb == null) { el.innerHTML = '<p class="qp-neu" style="font-size:13px;margin:0">No time-per-contact data in this period.</p>'; return; }
     const w = `period=${r.period}`;
     const parts = [['Callbacks', 'handle_share_cb', C()[0]], ['Outbound', 'handle_share_out', C()[1]], ['Voicemail', 'handle_share_vm', C()[3]]];
     el.innerHTML = `<div style="display:flex;height:26px;border-radius:4px;overflow:hidden;margin-bottom:10px">${parts.map(([l, k, c]) => `<div title="${l}: ${fp(r[k])}" style="width:${r[k] * 100}%;background:${c}"></div>`).join('')}</div>
@@ -1296,30 +1305,30 @@ dash.calc('staff_fit', {
     const aS = [{ k: 'aht_callbacks_min', label: 'Callbacks', c: C()[0] }, { k: 'aht_voicemail_min', label: 'Voicemail', c: C()[3] }, { k: 'aht_outbound_min', label: 'Outbound', c: C()[1] }];
     legend($('#lgAht'), aS.map((s) => ({ ...s, line: true })));
     const a = $('#chAht');
-    if (!fail(a, ['daily', 'periods'])) timeChart(a, G, { rows: G.daily.filter((r) => r.aht_callbacks_min != null), type: 'line', series: aS.map((s) => ({ ...s, f: (v) => f1(v) + ' min' })), label: 'Average handle time by contact type' });
+    if (!fail(a, ['daily', 'periods'])) timeChart(a, G, { rows: G.daily.filter((r) => r.aht_callbacks_min != null), type: 'line', series: aS.map((s) => ({ ...s, f: (v) => f1(v) + ' min' })), label: 'Average minutes per contact by type' });
     groupedTable($('#tblAht'), G, [
       ['label', 'Period', '', null, '', ''],
-      ['aht_cb', 'Callbacks', 'min', f1, 'Average handle time', 'Average minutes per callback'],
-      ['aht_vm', 'Voicemail', 'min', f1, 'Average handle time', 'Average minutes per voicemail'],
-      ['aht_out', 'Outbound', 'min', f1, 'Average handle time', 'Average minutes per outbound call'],
+      ['aht_cb', 'Callbacks', 'min', f1, 'Average minutes per contact', 'Average minutes per callback'],
+      ['aht_vm', 'Voicemail', 'min', f1, 'Average minutes per contact', 'Average minutes per voicemail'],
+      ['aht_out', 'Outbound', 'min', f1, 'Average minutes per contact', 'Average minutes per outbound call'],
       ['handle_hrs_per_staff', 'Per staff', 'hrs / day', f1, 'Workload', 'Handle hours per staff member per day'],
     ], { bars: true, barColors: { aht_cb: C()[0], aht_vm: C()[3], aht_out: C()[1], handle_hrs_per_staff: C()[2] } });
     const wk = G.summ.filter((x) => x.kind === 'week' && x.handle_hrs_per_staff != null).map((x) => ({ ...x, label: x.short }));
     const lc = $('#chLoad');
     if (!fail(lc, ['period_summary'])) groupBars(lc, wk, [{ k: 'handle_hrs_per_staff', label: 'Handle hours per staff', c: C()[2] }], f1, { v: 8, label: '8-hour day' }, period());
     const allr = S(G, 'all'), hiW = [...wk].sort((a, b) => b.handle_hrs_per_staff - a.handle_hrs_per_staff)[0], loW = [...wk].sort((a, b) => a.handle_hrs_per_staff - b.handle_hrs_per_staff)[0];
-    if (allr && hiW) $('#takeLoad').innerHTML = `<b>Staff averaged ${mk('period_summary', 'handle_hrs_per_staff', 'period=all', fmt(allr.handle_hrs_per_staff, f1))} handle hours a day across all days,</b> ranging from ${mk('period_summary', 'handle_hrs_per_staff', `period=${loW.period}`, fmt(loW.handle_hrs_per_staff, f1))} (week of ${esc(loW.short)}) to ${mk('period_summary', 'handle_hrs_per_staff', `period=${hiW.period}`, fmt(hiW.handle_hrs_per_staff, f1))} (week of ${esc(hiW.short)}). With most of a working day already spent on contacts, the backlog is unlikely to fall without more staff or shorter handle times — consistent with the staffing estimate in Projections &amp; patterns.${(() => { const a = G.notes.find((x) => x.date >= hiW.start && x.date <= hiW.end && x.category === 'Staffing change'); return a ? `<span class="qp-why" style="display:block">The highest week includes ${fd(D(a.date))}: ${esc(a.context)} Fewer staff sharing the same contacts raises hours per person.</span>` : ''; })()}`;
+    if (allr && hiW) $('#takeLoad').innerHTML = `<b>Staff averaged ${mk('period_summary', 'handle_hrs_per_staff', 'period=all', fmt(allr.handle_hrs_per_staff, f1))} hours a day on contacts across all days,</b> ranging from ${mk('period_summary', 'handle_hrs_per_staff', `period=${loW.period}`, fmt(loW.handle_hrs_per_staff, f1))} (week of ${esc(loW.short)}) to ${mk('period_summary', 'handle_hrs_per_staff', `period=${hiW.period}`, fmt(hiW.handle_hrs_per_staff, f1))} (week of ${esc(hiW.short)}). With most of a working day already spent on contacts, the backlog is unlikely to fall without more staff or shorter calls — consistent with the staffing estimate in Projections &amp; patterns.${(() => { const a = G.notes.find((x) => x.date >= hiW.start && x.date <= hiW.end && x.category === 'Staffing change'); return a ? `<span class="qp-why" style="display:block">The highest week includes ${fd(D(a.date))}: ${esc(a.context)} Fewer staff sharing the same contacts raises hours per person.</span>` : ''; })()}`;
     const h = G.head, fw = h && S(G, h.first_week), lw = h && S(G, h.latest_week);
-    if (fw && lw) $('#takeAht').innerHTML = `<b>Callback handle time ${word(lw.aht_cb, fw.aht_cb)} from ${mk('period_summary', 'aht_cb', `period=${fw.period}`, fmt(fw.aht_cb, f1))} to ${mk('period_summary', 'aht_cb', `period=${lw.period}`, fmt(lw.aht_cb, f1))} minutes</b> between the ${esc(lc1(fw.label))} and the ${esc(lc1(lw.label))}; outbound handle time went from ${mk('period_summary', 'aht_out', `period=${fw.period}`, fmt(fw.aht_out, f1))} to ${mk('period_summary', 'aht_out', `period=${lw.period}`, fmt(lw.aht_out, f1))} minutes.`;
+    if (fw && lw) $('#takeAht').innerHTML = `<b>Minutes per callback ${word(lw.aht_cb, fw.aht_cb)} from ${mk('period_summary', 'aht_cb', `period=${fw.period}`, fmt(fw.aht_cb, f1))} to ${mk('period_summary', 'aht_cb', `period=${lw.period}`, fmt(lw.aht_cb, f1))} minutes</b> between the ${esc(lc1(fw.label))} and the ${esc(lc1(lw.label))}; minutes per outbound call went from ${mk('period_summary', 'aht_out', `period=${fw.period}`, fmt(fw.aht_out, f1))} to ${mk('period_summary', 'aht_out', `period=${lw.period}`, fmt(lw.aht_out, f1))} minutes.`;
     const hi = extremes(G, G.daily, 'aht_callbacks_min', 3, false, f1);
-    $('#takeAhtNote').innerHTML = hi.length ? `<b>Longest callback handle times in the period:</b> ${hi.join('; ')} minutes.<span class="qp-why" style="display:block">The notes record no change in how callbacks were handled, so they do not explain longer callbacks; training and journal-entry days took time off the queue rather than lengthening calls.</span>` : '';
+    $('#takeAhtNote').innerHTML = hi.length ? `<b>Days with the longest callbacks:</b> ${hi.join('; ')} minutes.<span class="qp-why" style="display:block">The notes record no change in how callbacks were handled, so they do not explain longer callbacks; training and journal-entry days took time off the queue rather than lengthening calls.</span>` : '';
     renderContextList(G, 'aht');
   }
 
   const logCols = [
     ['date', 'Date', 'daily', null], ['staff_total', 'Staff', 'daily', f1], ['callbacks_selected', 'Selected', 'daily', f0], ['callbacks_scheduled', 'Scheduled', 'daily', f0], ['callbacks_accepted', 'Accepted', 'daily', f0],
     ['accept_rate', 'Accept %', 'daily_calc', fp], ['serviced_callbacks', 'CB serviced', 'daily', f0], ['serviced_outbound', 'Outbound', 'daily', f0], ['total_serviced', 'All serviced', 'daily_calc', f0], ['per_staff', 'Per staff', 'daily_calc', f1],
-    ['aht_callbacks_min', 'CB AHT (min)', 'daily', f1], ['backlog_not_dialed', 'Backlog', 'daily', f0], ['longest_wait_hrs', 'Wait (hrs)', 'daily', f1], ['wait_business_days', 'Wait (bus. days)', 'daily', f0], ['web_intake_8am', 'Web intake', 'daily', f0], ['note', 'Note', 'daily', null],
+    ['aht_callbacks_min', 'Min. per callback', 'daily', f1], ['backlog_not_dialed', 'Backlog', 'daily', f0], ['longest_wait_hrs', 'Wait (hrs)', 'daily', f1], ['wait_business_days', 'Wait (bus. days)', 'daily', f0], ['web_intake_8am', 'Web intake', 'daily', f0], ['note', 'Note', 'daily', null],
   ];
   function renderLog(G) {
     const el = $('#tblLog'), p = period(), pr = G.periods.find((x) => x.period === p);
@@ -1432,7 +1441,7 @@ dash.calc('staff_fit', {
     }
     if (G.outlook && !calcState.init) { calcState.init = true; calcReset(G); } else if (G.outlook) calcOut(G);
 
-    // demand vs throughput
+    // callbacks booked vs returned
     const J = joinCalc(G).filter((r) => r.callbacks_scheduled != null), gs = [{ k: 'callbacks_scheduled', label: 'Scheduled', c: C()[1] }, { k: 'serviced_callbacks', label: 'Serviced', c: C()[0] }];
     legend($('#lgGap'), gs.map((x) => ({ ...x, line: true })));
     const g = $('#chGap');
@@ -1444,7 +1453,7 @@ dash.calc('staff_fit', {
     // scatter
     const sc = $('#chScat');
     if (!fail(sc, ['daily', 'annotations'])) scatter(sc, G);
-    if (G.fit) $('#takeScat').innerHTML = `Across ${mk('staff_fit', 'days', null, fmt(G.fit.days))} days, each added staff member goes with about ${mk('staff_fit', 'slope', null, fmt(G.fit.slope, f1))} more callbacks serviced (correlation ${mk('staff_fit', 'r', null, fmt(G.fit.r, d3.format('.2f')))}). ${Math.abs(G.fit.r) < 0.5 ? 'The link is loose: training days, Fridays and CCSP spreadsheet days scatter around the line, so staffing alone does not set daily throughput.' : 'Staffing is a strong driver of daily throughput.'}`;
+    if (G.fit) $('#takeScat').innerHTML = `Across ${mk('staff_fit', 'days', null, fmt(G.fit.days))} days, each added staff member goes with about ${mk('staff_fit', 'slope', null, fmt(G.fit.slope, f1))} more callbacks serviced (correlation ${mk('staff_fit', 'r', null, fmt(G.fit.r, d3.format('.2f')))}). ${Math.abs(G.fit.r) < 0.5 ? 'The link is loose: training days, Fridays and CCSP spreadsheet days scatter around the line, so staffing alone does not set daily output.' : 'Staffing is a strong driver of daily output.'}`;
 
     // weekday
     const wd = G.weekday.filter((x) => x.period === period() && x.days).sort((a, b) => a.order - b.order).map((x) => ({ ...x, label: x.weekday }));
